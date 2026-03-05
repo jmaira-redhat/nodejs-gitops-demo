@@ -23,27 +23,32 @@ jobs:
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
 
+      - name: Calculate Short SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Build and Push
         run: |
-          IMAGE="quay.io/jmaira/gitopsdemo:${{ github.sha }}"
+          # Use the short SHA from the previous step
+          IMAGE="quay.io/jmaira/gitopsdemo:${{ steps.vars.outputs.sha_short }}"
           docker build -t $IMAGE .
           docker push $IMAGE
 
       - name: Update Dev Manifest
         run: |
           cd overlays/dev
-          # Automatically update the image tag in kustomization.yaml
-          kustomize edit set image quay.io/jmaira/gitopsdemo=quay.io/jmaira/gitopsdemo:${{ github.sha }}
+          # Update the image tag in kustomization.yaml with Short SHA
+          kustomize edit set image quay.io/jmaira/gitopsdemo=quay.io/jmaira/gitopsdemo:${{ steps.vars.outputs.sha_short }}
           
-          # Use sed to update the IMAGE_INFO env variable string
-          sed -i "s|value: \"quay.io/jmaira/gitopsdemo:.*\"|value: \"quay.io/jmaira/gitopsdemo:${{ github.sha }}\"|g" kustomization.yaml
+          # Update the IMAGE_INFO patch with Short SHA
+          sed -i "s|value: \"quay.io/jmaira/gitopsdemo:.*\"|value: \"quay.io/jmaira/gitopsdemo:${{ steps.vars.outputs.sha_short }}\"|g" kustomization.yaml
 
       - name: Git Commit and Push
         run: |
            git config user.name "github-actions"
            git config user.email "github-actions@github.com"
            git add .
-           git commit -m "ci: promote image to dev - ${{ github.sha }}"
+           git commit -m "ci: promote image to dev - ${{ steps.vars.outputs.sha_short }}"
            git push origin main
         env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
