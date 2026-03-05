@@ -23,3 +23,5 @@ oc apply -f bootstrap/namespaces.yaml
 
 # 2. Create the ArgoCD Applications
 oc apply -f bootstrap/argo-apps.yaml
+
+
