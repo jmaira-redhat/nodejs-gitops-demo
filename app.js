@@ -9,7 +9,7 @@ const imageInfo = process.env.IMAGE_INFO || "local";
 app.get('/', (req, res) => {
   res.json({
     // CHANGE THIS LINE:
-    message: `Greetings! I am ${envName} - V2 is here!`, 
+    message: `Greetings! I am ${envName} - V3 is here!`, 
     image: imageInfo,
     deployed_at: new Date().toISOString()
   });
