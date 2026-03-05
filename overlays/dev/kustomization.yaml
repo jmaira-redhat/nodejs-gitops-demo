@@ -5,7 +5,7 @@ namePrefix: dev-
 images:
 - name: quay.io/jmaira/gitopsdemo
   newName: quay.io/jmaira/gitopsdemo
-  newTag: 7c16138fdf3152a0cdbd0a86d3a479035ab4c338
+  newTag: 18e43fece94f96b9d73505ae345cac237d150486
 
 patches:
 - patch: |-
@@ -14,7 +14,7 @@ patches:
       value: "dev"
     - op: replace
       path: /spec/template/spec/containers/0/env/1/value
-      value: "quay.io/jmaira/gitopsdemo:7c16138fdf3152a0cdbd0a86d3a479035ab4c338"
+      value: "quay.io/jmaira/gitopsdemo:18e43fece94f96b9d73505ae345cac237d150486"
   target:
     kind: Deployment
     name: my-app
