@@ -37,8 +37,10 @@ jobs:
 
       - name: Git Commit and Push
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "ci: promote image to dev - ${{ github.sha }}"
-          git push
+           git config user.name "github-actions"
+           git config user.email "github-actions@github.com"
+           git add .
+           git commit -m "ci: promote image to dev - ${{ github.sha }}"
+           git push origin main
+        env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
