@@ -49,3 +49,21 @@ oc apply -f bootstrap/argo-apps.yaml
   Manually copy the newTag and IMAGE_INFO string from the dev overlay to the target environment's kustomization.yaml.
   
   This ensures environment parity—the exact same binary that was tested is what goes to production.
+
+# 🔍 Verification
+Check your API status across environments:
+```Bash
+# Get Dev URL
+oc get route my-app -n demo-dev-api -o jsonpath='{.spec.host}'
+
+# Get Test URL
+oc get route my-app -n demo-test-api -o jsonpath='{.spec.host}'
+```
+
+# ⚙️ Required Secrets (GitHub)
+Ensure these are set in your GitHub Repository Secrets:
+
+QUAY_USERNAME: Your Quay.io username.
+
+QUAY_PASSWORD: Your Quay.io password/token.
+
