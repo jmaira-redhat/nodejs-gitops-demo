@@ -52,7 +52,8 @@ oc apply -f bootstrap/argo-apps.yaml
 
 # 🔍 Verification
 Check your API status across environments:
-```Bash
+
+```bash
 # Get Dev URL
 oc get route my-app -n demo-dev-api -o jsonpath='{.spec.host}'
 
