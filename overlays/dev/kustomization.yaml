@@ -1,20 +1,22 @@
 resources:
-  - ../../base
+- ../../base
 namePrefix: dev-
 
 images:
-  - name: quay.io/jmaira/gitopsdemo
-    newName: quay.io/jmaira/gitopsdemo
-    newTag: "initial" # This will be overwritten by GitHub Actions
+- name: quay.io/jmaira/gitopsdemo
+  newName: quay.io/jmaira/gitopsdemo
+  newTag: 7c16138fdf3152a0cdbd0a86d3a479035ab4c338
 
 patches:
-  - target:
-      kind: Deployment
-      name: my-app
-    patch: |-
-      - op: replace
-        path: /spec/template/spec/containers/0/env/0/value
-        value: "dev"
-      - op: replace
-        path: /spec/template/spec/containers/0/env/1/value
-        value: "quay.io/jmaira/gitopsdemo:initial"
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/env/0/value
+      value: "dev"
+    - op: replace
+      path: /spec/template/spec/containers/0/env/1/value
+      value: "quay.io/jmaira/gitopsdemo:7c16138fdf3152a0cdbd0a86d3a479035ab4c338"
+  target:
+    kind: Deployment
+    name: my-app
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
