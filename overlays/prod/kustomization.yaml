@@ -1,0 +1,22 @@
+resources:
+- ../../base
+namePrefix: prod-
+
+images:
+- name: quay.io/jmaira/gitopsdemo
+  newName: quay.io/jmaira/gitopsdemo
+  newTag: deb019d9fd7a34b619012dafcf024779f200e523
+
+patches:
+- patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/env/0/value
+      value: "dev"
+    - op: replace
+      path: /spec/template/spec/containers/0/env/1/value
+      value: "quay.io/jmaira/gitopsdemo:deb019d9fd7a34b619012dafcf024779f200e523"
+  target:
+    kind: Deployment
+    name: my-app
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
