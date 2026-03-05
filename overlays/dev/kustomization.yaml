@@ -1,0 +1,20 @@
+resources:
+  - ../../base
+namePrefix: dev-
+
+images:
+  - name: quay.io/jmaira/gitopsdemo
+    newName: quay.io/jmaira/gitopsdemo
+    newTag: "initial" # This will be overwritten by GitHub Actions
+
+patches:
+  - target:
+      kind: Deployment
+      name: my-app
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/env/0/value
+        value: "dev"
+      - op: replace
+        path: /spec/template/spec/containers/0/env/1/value
+        value: "quay.io/jmaira/gitopsdemo:initial"

@@ -1,0 +1,43 @@
+name: CI-CD-Pipeline
+on:
+  push:
+    branches: [ main ]
+    paths-ignore: ['overlays/**']
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Login to Quay
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Build and Push
+        run: |
+          IMAGE="quay.io/jmaira/gitopsdemo:${{ github.sha }}"
+          docker build -t $IMAGE .
+          docker push $IMAGE
+
+      - name: Update Dev Manifest
+        run: |
+          cd overlays/dev
+          # Automatically update the image tag in kustomization.yaml
+          kustomize edit set image quay.io/jmaira/gitopsdemo=quay.io/jmaira/gitopsdemo:${{ github.sha }}
+          
+          # Use sed to update the IMAGE_INFO env variable string
+          sed -i "s|value: \"quay.io/jmaira/gitopsdemo:.*\"|value: \"quay.io/jmaira/gitopsdemo:${{ github.sha }}\"|g" kustomization.yaml
+
+      - name: Git Commit and Push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "ci: promote image to dev - ${{ github.sha }}"
+          git push
